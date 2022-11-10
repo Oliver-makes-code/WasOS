@@ -1,7 +1,5 @@
-import  "./pkg/wasos.js"
-import init from "./pkg/wasos.js"
+import { instantiate } from "./lib/wasos.generated.js";
 
-const mod = await init()
+const { test } = await instantiate();
 
-
-console.log(mod.test())
+console.log(test("nya!"));

@@ -1,11 +1,9 @@
 use wasm_bindgen::prelude::*;
+pub mod stdlib;
+use stdlib::stdout;
 
 #[wasm_bindgen]
-pub fn test() -> String {
-  owo().to_string()
+pub fn main() {
+  stdout::writeln("Hello, world!")
 }
 
-#[wasm_bindgen(module = "/../std/std.ts")]
-extern "C" {
-  fn owo() -> String;
-}

@@ -10,3 +10,11 @@ export function stdout$writeln(str: string) {
 export function stdin$promptln(): string {
     return prompt("") ?? ""
 }
+
+export function stdfs$listDir(path: string): string[] {
+    const out = [] as string[]
+    for (const a of Deno.readDirSync("."+path)) {
+        out.push(a.name)
+    }
+    return out
+}

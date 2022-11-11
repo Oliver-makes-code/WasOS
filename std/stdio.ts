@@ -11,10 +11,21 @@ export function stdin$promptln(): string {
     return prompt("") ?? ""
 }
 
-export function stdfs$listDir(path: string): string[] {
-    const out = [] as string[]
+export function stdfs$listDir(path: string): File[] {
+    const out = [] as File[]
     for (const a of Deno.readDirSync("."+path)) {
-        out.push(a.name)
+        out.push(new File(a.name, a.isDirectory))
     }
+    out.sort((a, b) => a.name > b.name ? 1 : -1)
     return out
+}
+
+export class File {
+    name: string
+    isDir: boolean
+
+    constructor(name: string, isDir: boolean) {
+        this.name = name
+        this.isDir = isDir
+    }
 }

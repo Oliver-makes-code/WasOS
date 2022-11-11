@@ -1,18 +1,16 @@
 use super::stdout;
 
-use wasm_bindgen::prelude::*;
+use wasm_bindgen::{prelude::*, JsObject, convert::FromWasmAbi};
 
 #[wasm_bindgen(module = "/../std/stdio.ts")]
 extern "C" {
     #[wasm_bindgen(js_name = "stdfs$listDir")]
-    fn list_dir_internal(path: String) -> Box<[JsValue]>;
-}
+    pub fn list_dir(path: String) -> Box<[File]>;
 
-pub fn list_dir(path: String) -> Vec<String> {
-    let dir = list_dir_internal(path);
-    let mut out: Vec<String> = Vec::new();
-    for i in &*dir {
-        out.push(i.as_string().expect("The function doesn't return any nulls."));
-    }
-    out
+    pub type File;
+
+    #[wasm_bindgen(method, getter)]
+    pub fn name(this: &File) -> String;
+    #[wasm_bindgen(method, getter)]
+    pub fn isDir(this: &File) -> bool;
 }

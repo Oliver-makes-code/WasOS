@@ -1,6 +1,6 @@
 {
   "tasks": {
     "wasmbuild": "deno run -A https://oliver-makes-code.github.io/wasmbuild//main.ts",
-    "run": "deno task wasmbuild && deno run -A main.ts"
+    "run": "rm -rf ./lib/snippets && cp -r ./std ./lib/snippets/std && deno task wasmbuild && deno run -A main.ts"
   }
 }

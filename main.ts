@@ -1,5 +1,11 @@
 import { instantiate } from "./lib/wasos.generated.js";
 
-const mod = await instantiate();
+if (Deno.args[0]) {
+    const mod = await instantiate({ url: new URL(Deno.args[0], import.meta.url)});
 
-mod.wasos_main()
+    await mod.main_fn()
+} else {
+    const mod = await instantiate();
+
+    await mod.wasos_main()
+}

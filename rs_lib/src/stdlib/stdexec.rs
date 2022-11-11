@@ -1,8 +1,7 @@
-use super::stdout;
-
-use wasm_bindgen::{prelude::*, JsObject, convert::FromWasmAbi};
+use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(module = "/../std/stdexec.ts")]
 extern "C" {
-    pub fn exit(code: isize);
+    pub fn exit(code: usize);
+    pub async fn execWasm(path: String) -> JsValue;
 }

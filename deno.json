@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "wasmbuild": "deno run -A https://deno.land/x/wasmbuild@0.8.5/main.ts",
+    "wasmbuild": "deno run -A https://oliver-makes-code.github.io/wasmbuild//main.ts",
     "run": "deno task wasmbuild && deno run -A main.ts"
   }
 }

@@ -13,10 +13,10 @@ pub fn wasos_main() {
       stdout::write(CURR_PATH.to_string());
       stdout::write(" $>".to_string());
       let input = stdin::promptln();
-      stdout::writeln("test 1".to_string());
       let files = stdfs::list_dir(CURR_PATH.to_string());
-      stdout::writeln("test 2".to_string());
-      
+      for file in files {
+        stdout::writeln(file)
+      }
     }
   }
 }

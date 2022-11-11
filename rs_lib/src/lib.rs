@@ -84,14 +84,14 @@ async unsafe fn test_builtins(args: Vec<String>) -> bool {
     if args.len() > 1 {
       let code_res = usize::from_str_radix(&args[1], 10);
       if code_res.is_ok() {
-        code = code_res.expect("We just checked");
+        code = code_res.unwrap();
       }
     }
     stdout::writeln(format!("Exiting with code {}", code.to_string()));
     stdexec::exit(code);
     return true
   } else if args[0] == "test_run_file" {
-    let code = stdexec::execWasm("lib/wasos_bg.wasm".to_string()).await.as_f64().expect("We know it returns a code.");
+    let code = stdexec::execWasm("lib/wasos_bg.wasm".to_string()).await.as_f64().unwrap();
     stdout::writeln(format!("Program exited with code {}", code.to_string()));
     return true
   }

@@ -1,3 +1,5 @@
+import * as stdmain from "./std.ts"
+
 const textEncoder = new TextEncoder()
 export function stdout$write(str: string) {
     Deno.stdout.writeSync(textEncoder.encode(str))
@@ -13,7 +15,7 @@ export function stdin$promptln(): string {
 
 export function stdfs$listDir(path: string): File[] {
     const out = [] as File[]
-    for (const a of Deno.readDirSync("."+path)) {
+    for (const a of Deno.readDirSync("./wasos"+stdmain.getRealPath(path))) {
         out.push(new File(a.name, a.isDirectory))
     }
     out.sort((a, b) => a.name > b.name ? 1 : -1)

@@ -5,8 +5,6 @@ use stdlib::stdin;
 use stdlib::stdfs;
 use stdlib::stdexec;
 
-static mut CURR_PATH: &str = "/";
-
 #[wasm_bindgen]
 pub async fn main_fn() {
   wasos_main().await;
@@ -20,7 +18,7 @@ pub async fn wasos_main() {
   stdout::writeln("".to_string());
   loop {
     unsafe {
-      stdout::write(CURR_PATH.to_string());
+      stdout::write(stdlib::getCurrPath());
       stdout::write(" $>".to_string());
       let input = stdin::promptln();
       let split = split_to_args(input);
@@ -70,7 +68,7 @@ pub fn split_to_args(string: String) -> Vec<String> {
 
 async unsafe fn test_builtins(args: Vec<String>) -> bool {
   if args[0] == "ls".to_string() {
-    let files = stdfs::list_dir(CURR_PATH.to_string());
+    let files = stdfs::list_dir(stdlib::getCurrPath());
     for file in files.iter() {
       stdout::write(file.name());
       if file.isDir() {
@@ -90,9 +88,28 @@ async unsafe fn test_builtins(args: Vec<String>) -> bool {
     stdout::writeln(format!("Exiting with code {}", code.to_string()));
     stdexec::exit(code);
     return true
-  } else if args[0] == "test_run_file" {
-    let code = stdexec::execWasm("lib/wasos_bg.wasm".to_string()).await.as_f64().unwrap();
-    stdout::writeln(format!("Program exited with code {}", code.to_string()));
+  } else if args[0] == "cd" {
+    if args.len() > 1 {
+      let path = args[1].to_owned();
+      if path.starts_with("/") {
+        if stdlib::pathExists(path.to_owned()) {
+          stdlib::setCurrPath(path.to_owned());
+        } else {
+          stdout::writeln("Directory doesn't exist.".to_string())
+        }
+      } else {
+        let mut new_path = stdlib::getCurrPath();
+        new_path.push_str("/");
+        new_path.push_str(&path);
+        if stdlib::pathExists(new_path.to_owned()) {
+          stdlib::setCurrPath(new_path.to_owned());
+        } else {
+          stdout::writeln("Directory doesn't exist.".to_string())
+        }
+      }
+    } else {
+      stdlib::setCurrPath("".to_string());
+    }
     return true
   }
   false

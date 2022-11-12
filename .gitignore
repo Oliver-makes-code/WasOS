@@ -3,3 +3,5 @@ target/
 pkg/
 /target
 lib/
+env.json
+wasos/

@@ -20,6 +20,14 @@ export function pathExists(path: string): boolean {
     }
 }
 
+export function fileExists(path: string): boolean {
+    try {
+        return !Deno.statSync("./wasos/"+getRealPath(path)).isDirectory
+    } catch {
+        return false
+    }
+}
+
 let currPath = ""
 
 export function getCurrPath(): string {

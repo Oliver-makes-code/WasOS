@@ -22,11 +22,14 @@ pub async fn wasos_main() {
       stdout::write(" $>".to_string());
       let input = stdin::promptln();
       let split = split_to_args(input);
-      let builtin_succeeded = test_builtins(split).await;
+      let builtin_succeeded = test_builtins(&split).await;
       if !builtin_succeeded {
-
-
-        stdout::writeln("Unknown command".to_string());
+        let qualified = qualify_file(split[0].to_owned());
+        if qualified.is_ok() {
+          stdexec::execWex(qualified.unwrap()).await;
+        } else {
+          stdout::writeln("Unknown command".to_string());
+        }
       }
     }
   }
@@ -47,7 +50,7 @@ pub fn split_to_args(string: String) -> Vec<String> {
     } else if c == '"' {
       let (_, cut) = string.split_at(i+1);
       for (i2, c2) in cut.chars().enumerate() {
-        if c2== '"' {
+        if c2 == '"' {
           i += i2+1;
           break;
         } else {
@@ -66,7 +69,7 @@ pub fn split_to_args(string: String) -> Vec<String> {
   out
 }
 
-async unsafe fn test_builtins(args: Vec<String>) -> bool {
+async unsafe fn test_builtins(args: &Vec<String>) -> bool {
   if args[0] == "ls".to_string() {
     let files = stdfs::list_dir(wasos_std::getCurrPath());
     for file in files.iter() {
@@ -90,22 +93,11 @@ async unsafe fn test_builtins(args: Vec<String>) -> bool {
     return true
   } else if args[0] == "cd" {
     if args.len() > 1 {
-      let path = args[1].to_owned();
-      if path.starts_with("/") {
-        if wasos_std::pathExists(path.to_owned()) {
-          wasos_std::setCurrPath(path.to_owned());
-        } else {
-          stdout::writeln("Directory doesn't exist.".to_string())
-        }
+      let qualify = qualify_path(args[1].to_owned());
+      if qualify.is_ok() {
+        wasos_std::setCurrPath(qualify.unwrap())
       } else {
-        let mut new_path = wasos_std::getCurrPath();
-        new_path.push_str("/");
-        new_path.push_str(&path);
-        if wasos_std::pathExists(new_path.to_owned()) {
-          wasos_std::setCurrPath(new_path.to_owned());
-        } else {
-          stdout::writeln("Directory doesn't exist.".to_string())
-        }
+        stdout::writeln("Directory doesn't exist.".to_string())
       }
     } else {
       wasos_std::setCurrPath("".to_string());
@@ -113,4 +105,35 @@ async unsafe fn test_builtins(args: Vec<String>) -> bool {
     return true
   }
   false
+}
+
+fn qualify_path(path: String) -> Result<String,()> {
+  let new = if path.starts_with("/") {
+    path
+  } else {
+    let mut new_path = wasos_std::getCurrPath();
+    new_path.push_str("/");
+    new_path.push_str(&path);
+    new_path
+  };
+  if wasos_std::pathExists(new.to_owned()) {
+    Ok(new)
+  } else {
+    Err(())
+  }
+}
+fn qualify_file(path: String) -> Result<String,()> {
+  let new = if path.starts_with("/") {
+    path
+  } else {
+    let mut new_path = wasos_std::getCurrPath();
+    new_path.push_str("/");
+    new_path.push_str(&path);
+    new_path
+  };
+  if wasos_std::fileExists(new.to_owned()) {
+    Ok(new)
+  } else {
+    Err(())
+  }
 }

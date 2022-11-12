@@ -9,6 +9,7 @@ pub mod stdexec;
 extern "C" {
     pub fn getRealPath(path: String) -> String;
     pub fn pathExists(path: String) -> bool;
+    pub fn fileExists(path: String) -> bool;
     pub fn getCurrPath() -> String;
     pub fn setCurrPath(val: String);
 }

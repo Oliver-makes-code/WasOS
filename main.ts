@@ -1,4 +1,4 @@
-import { instantiate } from "./lib/wasos.generated.js";
+import { instantiate } from "./lib/wasos_sh.generated.js";
 
 try {
     await Deno.mkdir("wasos")

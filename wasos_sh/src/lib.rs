@@ -1,9 +1,9 @@
 use wasm_bindgen::prelude::*;
-pub mod stdlib;
-use stdlib::stdout;
-use stdlib::stdin;
-use stdlib::stdfs;
-use stdlib::stdexec;
+use wasos_std;
+use wasos_std::stdout;
+use wasos_std::stdin;
+use wasos_std::stdfs;
+use wasos_std::stdexec;
 
 #[wasm_bindgen]
 pub async fn main_fn() {
@@ -18,7 +18,7 @@ pub async fn wasos_main() {
   stdout::writeln("".to_string());
   loop {
     unsafe {
-      stdout::write(stdlib::getCurrPath());
+      stdout::write(wasos_std::getCurrPath());
       stdout::write(" $>".to_string());
       let input = stdin::promptln();
       let split = split_to_args(input);
@@ -68,7 +68,7 @@ pub fn split_to_args(string: String) -> Vec<String> {
 
 async unsafe fn test_builtins(args: Vec<String>) -> bool {
   if args[0] == "ls".to_string() {
-    let files = stdfs::list_dir(stdlib::getCurrPath());
+    let files = stdfs::list_dir(wasos_std::getCurrPath());
     for file in files.iter() {
       stdout::write(file.name());
       if file.isDir() {
@@ -92,23 +92,23 @@ async unsafe fn test_builtins(args: Vec<String>) -> bool {
     if args.len() > 1 {
       let path = args[1].to_owned();
       if path.starts_with("/") {
-        if stdlib::pathExists(path.to_owned()) {
-          stdlib::setCurrPath(path.to_owned());
+        if wasos_std::pathExists(path.to_owned()) {
+          wasos_std::setCurrPath(path.to_owned());
         } else {
           stdout::writeln("Directory doesn't exist.".to_string())
         }
       } else {
-        let mut new_path = stdlib::getCurrPath();
+        let mut new_path = wasos_std::getCurrPath();
         new_path.push_str("/");
         new_path.push_str(&path);
-        if stdlib::pathExists(new_path.to_owned()) {
-          stdlib::setCurrPath(new_path.to_owned());
+        if wasos_std::pathExists(new_path.to_owned()) {
+          wasos_std::setCurrPath(new_path.to_owned());
         } else {
           stdout::writeln("Directory doesn't exist.".to_string())
         }
       }
     } else {
-      stdlib::setCurrPath("".to_string());
+      wasos_std::setCurrPath("".to_string());
     }
     return true
   }

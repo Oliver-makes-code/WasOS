@@ -12,9 +12,9 @@ pub async fn main_fn() {
 
 #[wasm_bindgen]
 pub async fn wasos_main() {
-  stdout::writeln("===============".to_string());
-  stdout::writeln("= WasOS 0.0.0 =".to_string());
-  stdout::writeln("===============".to_string());
+  stdout::writeln("=====================".to_string());
+  stdout::writeln("= WasOS Shell 0.0.0 =".to_string());
+  stdout::writeln("=====================".to_string());
   stdout::writeln("".to_string());
   loop {
     unsafe {

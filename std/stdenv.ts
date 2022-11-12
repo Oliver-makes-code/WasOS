@@ -12,3 +12,11 @@ async function getOrCreateEnv(): Promise<Env> {
 }
 
 const env = await getOrCreateEnv()
+
+export function getEnv(key: string): string {
+    return env[key] ?? ""
+}
+
+export function setKey(key: string, val: string) {
+    env[key] = val
+}

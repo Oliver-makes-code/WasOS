@@ -12,3 +12,9 @@ extern "C" {
     pub fn getCurrPath() -> String;
     pub fn setCurrPath(val: String);
 }
+
+#[wasm_bindgen(module = "/../std/stdenv.ts")]
+extern "C" {
+    pub fn getEnv(key: String) -> String;
+    pub fn setEnv(key: String, value: String);
+}

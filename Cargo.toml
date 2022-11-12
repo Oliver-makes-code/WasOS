@@ -1,4 +1,5 @@
 [workspace]
 members = [
   "wasos_sh",
+  "wasos_std"
 ]

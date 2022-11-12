@@ -1,15 +1,9 @@
-import { instantiate } from "./lib/wasos_sh.generated.js";
-
 try {
     await Deno.mkdir("wasos")
 } catch {/*Ignored!*/}
 
-if (Deno.args[0]) {
-    const mod = await instantiate({ url: new URL(Deno.args[0], import.meta.url)});
+const { instantiate } = (await import(Deno.args[0] ? Deno.args[0]+".generated.js" : "./lib/wasos_sh.generated.js"))
 
-    await mod.main_fn()
-} else {
-    const mod = await instantiate();
+const mod = await instantiate();
 
-    await mod.wasos_main()
-}
+await mod.main_fn()
